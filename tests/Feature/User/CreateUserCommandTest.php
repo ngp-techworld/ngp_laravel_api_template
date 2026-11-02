@@ -15,7 +15,7 @@ it('creates a user with a hashed password and a ULID', function (): void {
 
     expect($user->email)->toBe('sara@example.com')
         ->and($user->role)->toBe(UserRole::User)
-        ->and($user->id)->toBeString()->toHaveLength(26)
+        ->and($user->id)->toMatch('/^[0-9A-HJKMNP-TV-Z]{26}$/')
         ->and(Hash::check('a-strong-password', $user->password))->toBeTrue();
 });
 
