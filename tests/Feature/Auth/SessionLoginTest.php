@@ -14,7 +14,7 @@ it('hands out the CSRF cookie the SPA needs before signing in', function (): voi
 it('signs in with email and password and starts a session', function (): void {
     $user = User::factory()->create(['email' => 'demo@example.com']);
 
-    $this->postJson('/api/v1/auth/login', ['email' => 'demo@example.com', 'password' => 'password'], spaHeaders())
+    $login = $this->postJson('/api/v1/auth/login', ['email' => 'demo@example.com', 'password' => 'password'], spaHeaders())
         ->assertOk()
         ->assertCookie(config('session.cookie'))
         ->assertExactJson([
@@ -28,7 +28,11 @@ it('signs in with email and password and starts a session', function (): void {
 
     $this->assertAuthenticatedAs($user, 'web');
 
-    $this->getJson('/api/v1/auth/me', spaHeaders())
+    // A fresh guard proves the session cookie alone signs the user in.
+    Auth::forgetGuards();
+
+    $this->withCookie(config('session.cookie'), sessionCookie($login))
+        ->getJson('/api/v1/auth/me', spaHeaders())
         ->assertOk()
         ->assertJsonPath('data.id', $user->id);
 });

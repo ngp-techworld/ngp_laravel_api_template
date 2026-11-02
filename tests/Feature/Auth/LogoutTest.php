@@ -3,17 +3,27 @@
 declare(strict_types=1);
 
 use App\Models\User;
+use Illuminate\Support\Facades\Auth;
 use Laravel\Sanctum\PersonalAccessToken;
 
 it('ends the SPA session', function (): void {
-    $user = User::factory()->create(['email' => 'demo@example.com']);
-    $this->postJson('/api/v1/auth/login', ['email' => 'demo@example.com', 'password' => 'password'], spaHeaders())
+    User::factory()->create(['email' => 'demo@example.com']);
+    $login = $this->postJson('/api/v1/auth/login', ['email' => 'demo@example.com', 'password' => 'password'], spaHeaders())
         ->assertOk();
-    $this->assertAuthenticatedAs($user, 'web');
+    $session = sessionCookie($login);
+    Auth::forgetGuards();
 
-    $this->postJson('/api/v1/auth/logout', [], spaHeaders())->assertNoContent();
+    $this->withCookie(config('session.cookie'), $session)
+        ->postJson('/api/v1/auth/logout', [], spaHeaders())
+        ->assertNoContent();
 
     $this->assertGuest('web');
+    Auth::forgetGuards();
+
+    // The old session cookie no longer signs anybody in.
+    $this->withCookie(config('session.cookie'), $session)
+        ->getJson('/api/v1/auth/me', spaHeaders())
+        ->assertUnauthorized();
 });
 
 it('revokes the token when a bearer client logs out', function (): void {
