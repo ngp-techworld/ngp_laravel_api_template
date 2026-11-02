@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Database\Seeders;
 
-use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -13,15 +12,17 @@ final class DatabaseSeeder extends Seeder
     use WithoutModelEvents;
 
     /**
-     * Seed the application's database.
+     * Seed what local development needs. Never runs outside local/testing:
+     * real users come from `php artisan app:create-user` (ngp-laravel §6).
      */
     public function run(): void
     {
-        // User::factory(10)->create();
+        if (! app()->environment('local', 'testing')) {
+            $this->command->warn('Skipped: demo data is for local development only. Use php artisan app:create-user.');
 
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
-        ]);
+            return;
+        }
+
+        $this->call(DemoSeeder::class);
     }
 }
