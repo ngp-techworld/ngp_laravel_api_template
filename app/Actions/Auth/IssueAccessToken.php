@@ -12,7 +12,8 @@ use SensitiveParameter;
  * Bearer-token sign-in for mobile apps and server-side clients (Next.js).
  *
  * First-party tokens get every ability ("*"); give third-party tokens a
- * narrower list. Expiry comes from config('sanctum.expiration') (minutes).
+ * narrower list of App\Enums\TokenAbility values. Expiry comes from
+ * config('sanctum.expiration') (minutes).
  */
 final class IssueAccessToken
 {

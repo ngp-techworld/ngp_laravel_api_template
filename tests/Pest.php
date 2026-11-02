@@ -2,7 +2,10 @@
 
 declare(strict_types=1);
 
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Testing\TestResponse;
+use Laravel\Sanctum\Sanctum;
 use Tests\TestCase;
 
 /*
@@ -46,4 +49,22 @@ function spaHeaders(): array
 function bearer(string $token): array
 {
     return ['Authorization' => "Bearer {$token}"];
+}
+
+/**
+ * The (decrypted) session id a login response set, to replay it with
+ * withCookie() after Auth::forgetGuards() and prove the session really works.
+ */
+function sessionCookie(TestResponse $response): string
+{
+    return (string) $response->getCookie(config('session.cookie'))?->getValue();
+}
+
+/**
+ * Signs in like our first-party clients do: a token with every ability.
+ * Use Sanctum::actingAs($user, [...]) directly to test narrower tokens.
+ */
+function signIn(?User $user = null): User
+{
+    return Sanctum::actingAs($user ?? User::factory()->create(), ['*']);
 }

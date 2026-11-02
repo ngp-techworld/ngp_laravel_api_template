@@ -3,11 +3,10 @@
 declare(strict_types=1);
 
 use App\Models\User;
-use Laravel\Sanctum\Sanctum;
 
 it('returns the signed-in user with a ULID and a UTC timestamp', function (): void {
     $this->travelTo(now()->setDateTime(2026, 11, 2, 9, 44));
-    $user = Sanctum::actingAs(User::factory()->create(['name' => 'Demo User', 'email' => 'demo@example.com']));
+    $user = signIn(User::factory()->create(['name' => 'Demo User', 'email' => 'demo@example.com']));
 
     $this->getJson('/api/v1/auth/me')
         ->assertOk()
