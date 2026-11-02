@@ -20,11 +20,13 @@ return [
     |
     */
 
+    // Only the SPA dev servers (React on :5173) use cookie auth. Bearer-token
+    // clients (Next.js on :3000, mobile) must NOT be listed, or their POSTs
+    // would need a CSRF token.
     'stateful' => explode(',', env('SANCTUM_STATEFUL_DOMAINS', sprintf(
         '%s%s',
-        'localhost,localhost:3000,127.0.0.1,127.0.0.1:8000,::1',
+        'localhost:5173,127.0.0.1:5173',
         Sanctum::currentApplicationUrlWithPort(),
-        // Sanctum::currentRequestHost(),
     ))),
 
     /*
@@ -52,7 +54,8 @@ return [
     |
     */
 
-    'expiration' => null,
+    // Bearer tokens live 30 days by default; clients sign in again on a 401.
+    'expiration' => (int) env('SANCTUM_TOKEN_EXPIRATION', 60 * 24 * 30),
 
     /*
     |--------------------------------------------------------------------------

@@ -19,6 +19,9 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware): void {
         // First global middleware, so every response (errors included) is translated.
         $middleware->prepend(SetLocale::class);
+
+        // Requests from SANCTUM_STATEFUL_DOMAINS (our SPA) get session cookies + CSRF.
+        $middleware->statefulApi();
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         // Expected domain errors (wrong password, invalid state...) are not bugs.

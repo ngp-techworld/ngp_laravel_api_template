@@ -19,3 +19,31 @@ use Tests\TestCase;
 pest()->extend(TestCase::class)->use(RefreshDatabase::class)->in('Feature');
 
 pest()->extend(TestCase::class)->in('Unit');
+
+/*
+|--------------------------------------------------------------------------
+| Helpers
+|--------------------------------------------------------------------------
+*/
+
+/**
+ * Headers the React SPA sends (through the Vite proxy), so Sanctum treats
+ * the request as stateful: session cookie auth instead of a bearer token.
+ *
+ * @return array<string, string>
+ */
+function spaHeaders(): array
+{
+    return [
+        'Origin' => 'http://localhost:5173',
+        'Referer' => 'http://localhost:5173/',
+    ];
+}
+
+/**
+ * @return array<string, string>
+ */
+function bearer(string $token): array
+{
+    return ['Authorization' => "Bearer {$token}"];
+}

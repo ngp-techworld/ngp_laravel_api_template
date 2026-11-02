@@ -10,3 +10,8 @@ parameters:
         - config/
         - database/
         - routes/
+
+    # Framework PHPDoc is sometimes narrower than runtime (e.g. Sanctum's
+    # currentAccessToken() is a TransientToken for cookie sign-ins), so don't
+    # flag instanceof checks against it as always true.
+    treatPhpDocTypesAsCertain: false

@@ -25,4 +25,5 @@ return [
     'server_error' => 'Something went wrong. Please try again later.',
     'service_unavailable' => 'The service is temporarily unavailable. Please try again later.',
     'http_error' => 'The request could not be completed.',
+    'session_required' => 'Session sign-in is only available to allowed web apps. Use /api/v1/auth/token to get an access token.',
 ];
