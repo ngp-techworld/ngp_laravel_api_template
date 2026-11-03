@@ -27,8 +27,10 @@ The React (`ngp_react_vite_template`), Next.js (`ngp_nextjs_template`) and Flutt
 
 ## Run locally
 
-Requirements: PHP 8.4 (`pdo_pgsql`, `intl`, `zip`, `bcmath`), Composer 2, PostgreSQL 16 with two
-databases, `app` and `app_test`.
+Requirements: PHP 8.4 at its latest patch, at least 8.4.27 (`pdo_pgsql`, `intl`, `zip`, `bcmath`),
+Composer 2, PostgreSQL 16 with two databases, `app` and `app_test`. `composer install` refuses
+older PHP releases because they have known security issues; raise the floor in `composer.json`
+when a new PHP security release comes out.
 
 ```bash
 cp .env.example .env && composer install && php artisan key:generate   # then set DB_* in .env
